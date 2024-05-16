@@ -1,0 +1,53 @@
+﻿@page "/item/add"
+@using BlazorItemsManagerWebApp.Web.Data.Repositories.Contracts
+@using BlazorItemsManagerWebApp.Web.ViewModels
+@inject IItemRepository itemRepository
+@inject NavigationManager NavigationManager
+
+<h3>Add Item</h3>
+
+<EditForm Model="@itemAddViewModel" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <InputText id="name" class="form-control" @bind-Value="itemAddViewModel.Name" />
+    </div>
+
+    <div class="form-group">
+        <label for="description">Description:</label>
+        <InputText id="description" class="form-control" @bind-Value="itemAddViewModel.Description" />
+    </div>
+
+    <div class="form-group">
+        <label for="quantity">Current Quantity:</label>
+        <InputNumber id="quantity" class="form-control" @bind-Value="itemAddViewModel.CurrentQuantity" />
+        <ValidationMessage For="@(() => itemAddViewModel.CurrentQuantity)" />
+    </div>
+
+    <div class="form-group">
+        <label for="price">Current Unit Price:</label>
+        <InputNumber id="price" class="form-control" @bind-Value="itemAddViewModel.CurrentUnitPrice" />
+        <ValidationMessage For="@(() => itemAddViewModel.CurrentUnitPrice)" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+@code {
+    private ItemAddViewModel itemAddViewModel = new ItemAddViewModel();
+
+    private async Task HandleValidSubmit()
+    {
+        var result = await itemRepository.CreateItemAsync(itemAddViewModel);
+
+        if(result)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            NavigationManager.NavigateTo(NavigationManager.Uri, true);
+        }
+    }
+}
