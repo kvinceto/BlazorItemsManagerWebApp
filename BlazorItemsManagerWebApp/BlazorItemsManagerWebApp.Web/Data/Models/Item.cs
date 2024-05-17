@@ -17,5 +17,7 @@
         public DateTime LastModifiedAt { get; set; }
 
         public string UserId { get; set; } = null!;
+
+        public bool IsDeleted { get; set; }
     }
 }

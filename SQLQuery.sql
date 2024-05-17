@@ -27,6 +27,7 @@ CREATE TABLE Items (
     CreatedAt DATETIME2 NOT NULL,
     LastModifiedAt DATETIME2 NOT NULL,
     UserId NVARCHAR(100) NOT NULL,
+	IsDeleted BIT NOT NULL DEFAULT 0,
     FOREIGN KEY (UserId) REFERENCES Users(Id)
 );
 
