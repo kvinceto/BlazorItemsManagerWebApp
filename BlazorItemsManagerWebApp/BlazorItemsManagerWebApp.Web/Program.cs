@@ -1,5 +1,6 @@
 using BlazorItemsManagerWebApp.Web.Data.Repositories.Contracts;
 using BlazorItemsManagerWebApp.Web.Data.Repositories;
+using BlazorItemsManagerWebApp.Web.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-
+builder.Services.AddSingleton<IDapperContext, DapperContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
 

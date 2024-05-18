@@ -9,11 +9,11 @@
 
     public class UserRepository : IUserRepository
     {
-        private readonly IConfiguration configuration;
+        private readonly IDapperContext context;
 
-        public UserRepository(IConfiguration configuration)
+        public UserRepository(IDapperContext context)
         {
-            this.configuration = configuration;
+            this.context = context;
         }
 
         /// <summary>
@@ -23,7 +23,7 @@
         /// <returns>UserViewModel or Null</returns>
         public async Task<UserViewModel?> GetUserByEmailAsync(string email)
         {
-            using (var conection = GetConection())
+            using (var conection = this.context.CreateConnection())
             {
                 conection.Open();
 
@@ -63,7 +63,7 @@
                 Role = user.Role
             };
 
-            using (var conection = GetConection())
+            using (var conection = this.context.CreateConnection())
             {
                 conection.Open();
 
@@ -71,15 +71,6 @@
 
                 return await conection.ExecuteAsync(sql, dbUser);
             }
-        }
-
-        /// <summary>
-        /// This method ccreates a connection to the database
-        /// </summary>
-        /// <returns>SqlConnection</returns>
-        private SqlConnection GetConection()
-        {
-            return new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
         }
     }
 }

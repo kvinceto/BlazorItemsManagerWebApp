@@ -1,7 +1,6 @@
 ﻿namespace BlazorItemsManagerWebApp.Web.Data.Repositories
 {
     using Dapper;
-    using Microsoft.Data.SqlClient;
 
     using Data.Models;
     using Data.Repositories.Contracts;
@@ -11,11 +10,11 @@
 
     public class ItemRepository : IItemRepository
     {
-        private readonly IConfiguration configuration;
+        private readonly IDapperContext context;
 
-        public ItemRepository(IConfiguration configuration)
+        public ItemRepository(IDapperContext context)
         {
-            this.configuration = configuration;
+            this.context = context;
         }
 
         /// <summary>
@@ -42,7 +41,7 @@
             string sql = @"INSERT INTO Items (Name, Description, CurrentQuantity, CurrentUnitPrice, CreatedAt, LastModifiedAt, UserId, IsDeleted, Unit)
               VALUES (@Name, @Description, @CurrentQuantity, @CurrentUnitPrice, @CreatedAt, @LastModifiedAt, @UserId, @IsDeleted, @Unit);";
 
-            using (var conection = GetConection())
+            using (var conection = this.context.CreateConnection())
             {
                 var result = await conection.ExecuteAsync(sql, item);
 
@@ -85,7 +84,7 @@
                            WHERE
                               Id = @Id;";
 
-            using (var conection = GetConection())
+            using (var conection = this.context.CreateConnection())
             {
                 var result = await conection.ExecuteAsync(sql, item);
 
@@ -104,7 +103,7 @@
                    SET IsDeleted = 1, LastModifiedAt = @LastModifiedAt
                    WHERE Id = @Id AND CurrentQuantity = 0;";
 
-            using (var conection = GetConection())
+            using (var conection = this.context.CreateConnection())
             {
                 var result = await conection.ExecuteAsync(sql, new { LastModifiedAt = DateTime.UtcNow, Id = id });
 
@@ -122,7 +121,7 @@
                            FROM Items
                            WHERE IsDeleted = 1;";
 
-            using (var conection = GetConection())
+            using (var conection = this.context.CreateConnection())
             {
                 var result = await conection.QueryAsync<Item>(sql);
 
@@ -152,7 +151,7 @@
             string sql = @"SELECT Id, Name, Description, CurrentQuantity, CurrentUnitPrice, CreatedAt, LastModifiedAt, UserId, IsDeleted, Unit
                            FROM Items;";
 
-            using (var conection = GetConection())
+            using (var conection = this.context.CreateConnection())
             {
                 var result = await conection.QueryAsync<Item>(sql);
 
@@ -183,7 +182,7 @@
                            FROM Items
                            WHERE IsDeleted = 0;";
 
-            using (var conection = GetConection())
+            using (var conection = this.context.CreateConnection())
             {
                 var result = await conection.QueryAsync<Item>(sql);
 
@@ -199,7 +198,7 @@
                         LastModifiedAt = item.LastModifiedAt.ToString(DateTimeDefaultFormat),
                         IsDeleted = item.IsDeleted,
                         UserId = item.UserId,
-                        Unit= item.Unit
+                        Unit = item.Unit
                     });
             }
         }
@@ -215,7 +214,7 @@
                            FROM Items
                            WHERE Id={0};", id);
 
-            using (var conection = GetConection())
+            using (var conection = this.context.CreateConnection())
             {
                 var result = await conection.QueryFirstOrDefaultAsync<Item>(sql);
 
@@ -240,15 +239,6 @@
                     };
                 }
             }
-        }
-
-        /// <summary>
-        /// This method ccreates a connection to the database
-        /// </summary>
-        /// <returns>SqlConnection</returns>
-        private SqlConnection GetConection()
-        {
-            return new SqlConnection(configuration.GetConnectionString("DefaultConnection"));
         }
     }
 }
