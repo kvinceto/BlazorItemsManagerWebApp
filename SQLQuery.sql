@@ -8,61 +8,15 @@ GO
 USE [BlazorAppDb]
 GO
 
-/*CREATE TABLES*/
-CREATE TABLE Users (
-    Id NVARCHAR(100) PRIMARY KEY,
-    Email NVARCHAR(100) UNIQUE NULL,
-    Password NVARCHAR(20) NOT NULL,
-    Role NVARCHAR(50) NOT NULL
-);
-
-GO
+/*CREATE TABLE*/
 
 CREATE TABLE Items (
     Id INT PRIMARY KEY IDENTITY,
     Name NVARCHAR(100) NOT NULL,
-    Description NVARCHAR(255) NULL,
-    CurrentQuantity DECIMAL(16,4) NOT NULL,
-    CurrentUnitPrice DECIMAL(18, 2) NOT NULL,
-    CreatedAt DATETIME2 NOT NULL,
-    LastModifiedAt DATETIME2 NOT NULL,
-    UserId NVARCHAR(100) NOT NULL,
+    Description NVARCHAR(255) NOT NULL,
+    Price DECIMAL(18, 2) NOT NULL,
+    CreatedAd NVARCHAR(20) NOT NULL,
 	IsDeleted BIT NOT NULL DEFAULT 0,
-	Unit NVARCHAR(50) NOT NULL,
-    FOREIGN KEY (UserId) REFERENCES Users(Id)
-);
-
-GO
-
-
-CREATE TABLE Deliveries (
-    Id INT PRIMARY KEY IDENTITY,
-    DelivaryNumber NVARCHAR(100) NULL,
-    ItemId INT NOT NULL,
-    Quantity DECIMAL(16,4) NOT NULL,
-    PricePerUnit DECIMAL(18,2) NOT NULL,
-    TotalPrice DECIMAL(18,2) NOT NULL,
-    DeliveredBy NVARCHAR(100) NOT NULL,
-    DeliveredAt DATETIME2 NOT NULL,
-    FOREIGN KEY (ItemId) REFERENCES Items(Id),
-    UserId NVARCHAR(100) NOT NULL,
-    FOREIGN KEY (UserId) REFERENCES Users(Id)
-);
-
-GO
-
-
-CREATE TABLE Expenses (
-    Id INT PRIMARY KEY IDENTITY,
-    ExpenceNumber NVARCHAR(100) NULL,
-    ItemId INT NOT NULL,
-    ItemQuantity DECIMAL(16,4) NOT NULL,
-    ItemAmountPerUnit DECIMAL(18,2) NOT NULL,
-    ItemTotalAmount DECIMAL(18,2) NOT NULL,
-    DateOfIsue DATETIME2 NOT NULL,
-    FOREIGN KEY (ItemId) REFERENCES Items(Id),
-    UserId NVARCHAR(100) NOT NULL,
-    FOREIGN KEY (UserId) REFERENCES Users(Id)
 );
 
 GO

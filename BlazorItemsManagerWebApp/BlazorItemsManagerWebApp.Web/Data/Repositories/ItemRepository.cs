@@ -4,9 +4,10 @@
 
     using Data.Models;
     using Data.Repositories.Contracts;
+
     using ViewModels;
 
-    using static Common.ApplicationConstants.GlobalContants;
+    using static Common.ApplicationConstants.ItemConstants;
 
     public class ItemRepository : IItemRepository
     {
@@ -24,22 +25,18 @@
         /// <returns>True or False</returns>
         public async Task<bool> CreateItemAsync(ItemAddViewModel itemAddViewModel)
         {
-            var date = DateTime.UtcNow;
+            var date = DateTime.UtcNow.ToString(DateTimeDefaultFormat);
             Item item = new Item()
             {
                 Name = itemAddViewModel.Name,
                 Description = itemAddViewModel.Description,
-                CurrentQuantity = itemAddViewModel.CurrentQuantity,
-                CurrentUnitPrice = itemAddViewModel.CurrentUnitPrice,
-                CreatedAt = date,
-                LastModifiedAt = date,
-                UserId = itemAddViewModel.UserId,
-                IsDeleted = false,
-                Unit = itemAddViewModel.Unit
+                Price = itemAddViewModel.Price,
+                CreatedAd = date,
+                IsDeleted = false
             };
 
-            string sql = @"INSERT INTO Items (Name, Description, CurrentQuantity, CurrentUnitPrice, CreatedAt, LastModifiedAt, UserId, IsDeleted, Unit)
-              VALUES (@Name, @Description, @CurrentQuantity, @CurrentUnitPrice, @CreatedAt, @LastModifiedAt, @UserId, @IsDeleted, @Unit);";
+            string sql = @"INSERT INTO Items (Name, Description, Price, CreatedAd, IsDeleted)
+              VALUES (@Name, @Description, @Price, @CreatedAd, @IsDeleted);";
 
             using (var conection = this.context.CreateConnection())
             {
@@ -61,26 +58,14 @@
                 Id = itemEditViewModel.Id,
                 Name = itemEditViewModel.Name,
                 Description = itemEditViewModel.Description,
-                CurrentQuantity = itemEditViewModel.CurrentQuantity,
-                CurrentUnitPrice = itemEditViewModel.CurrentUnitPrice,
-                CreatedAt = DateTime.Parse(itemEditViewModel.CreatedAt),
-                LastModifiedAt = DateTime.UtcNow,
-                UserId = itemEditViewModel.UserId,
-                IsDeleted = itemEditViewModel.IsDeleted,
-                Unit = itemEditViewModel.Unit
+                Price = itemEditViewModel.Price
             };
 
             string sql = @"UPDATE Items
                            SET
                               Name = @Name,
-                              Description = @Description,
-                              CurrentQuantity = @CurrentQuantity,
-                              CurrentUnitPrice = @CurrentUnitPrice,
-                              CreatedAt = @CreatedAt,
-                              LastModifiedAt = @LastModifiedAt,
-                              UserId = @UserId,
-                              IsDeleted = @IsDeleted,
-                              Unit = @Unit
+                              Description = @Description,      
+                              Price = @Price
                            WHERE
                               Id = @Id;";
 
@@ -100,8 +85,8 @@
         public async Task<bool> DeleteItemAsync(int id)
         {
             string sql = @"UPDATE Items
-                   SET IsDeleted = 1, LastModifiedAt = @LastModifiedAt
-                   WHERE Id = @Id AND CurrentQuantity = 0;";
+                   SET IsDeleted = 1
+                   WHERE Id = @Id;";
 
             using (var conection = this.context.CreateConnection())
             {
@@ -115,9 +100,9 @@
         /// This method find all Dealeted Items in the database
         /// </summary>
         /// <returns>Collection of ItemEditViewModel</returns>
-        public async Task<IEnumerable<ItemEditViewModel>> GetAllDeletedItemsAsync()
+        public async Task<IEnumerable<ItemInfoViewModel>> GetAllDeletedItemsAsync()
         {
-            string sql = @"SELECT Id, Name, Description, CurrentQuantity, CurrentUnitPrice, CreatedAt, LastModifiedAt, UserId, IsDeleted, Unit
+            string sql = @"SELECT Id, Name, Description, Price, CreatedAd
                            FROM Items
                            WHERE IsDeleted = 1;";
 
@@ -126,18 +111,13 @@
                 var result = await conection.QueryAsync<Item>(sql);
 
                 return result
-                    .Select(item => new ItemEditViewModel()
+                    .Select(item => new ItemInfoViewModel()
                     {
                         Id = item.Id,
                         Name = item.Name,
                         Description = item.Description,
-                        CurrentQuantity = item.CurrentQuantity,
-                        CurrentUnitPrice = item.CurrentUnitPrice,
-                        CreatedAt = item.CreatedAt.ToString(DateTimeDefaultFormat),
-                        LastModifiedAt = item.LastModifiedAt.ToString(DateTimeDefaultFormat),
-                        IsDeleted = item.IsDeleted,
-                        UserId = item.UserId,
-                        Unit = item.Unit
+                        Price = item.Price,
+                        CreatedAd = item.CreatedAd
                     });
             }
         }
@@ -146,28 +126,23 @@
         /// This method find all Items in the database
         /// </summary>
         /// <returns>Collection of ItemEditViewModel</returns>
-        public async Task<IEnumerable<ItemEditViewModel>> GetAllItemsAsync()
+        public async Task<IEnumerable<ItemInfoViewModel>> GetAllItemsAsync()
         {
-            string sql = @"SELECT Id, Name, Description, CurrentQuantity, CurrentUnitPrice, CreatedAt, LastModifiedAt, UserId, IsDeleted, Unit
-                           FROM Items;";
+            string sql = @"SELECT Id, Name, Description, Price, CreatedAd
+                           FROM Items";
 
             using (var conection = this.context.CreateConnection())
             {
                 var result = await conection.QueryAsync<Item>(sql);
 
                 return result
-                    .Select(item => new ItemEditViewModel()
+                    .Select(item => new ItemInfoViewModel()
                     {
                         Id = item.Id,
                         Name = item.Name,
                         Description = item.Description,
-                        CurrentQuantity = item.CurrentQuantity,
-                        CurrentUnitPrice = item.CurrentUnitPrice,
-                        CreatedAt = item.CreatedAt.ToString(DateTimeDefaultFormat),
-                        LastModifiedAt = item.LastModifiedAt.ToString(DateTimeDefaultFormat),
-                        IsDeleted = item.IsDeleted,
-                        UserId = item.UserId,
-                        Unit = item.Unit
+                        Price = item.Price,
+                        CreatedAd = item.CreatedAd
                     });
             }
         }
@@ -176,9 +151,9 @@
         /// This method find all Active Items in the database
         /// </summary>
         /// <returns>Collection of ItemEditViewModel</returns>
-        public async Task<IEnumerable<ItemEditViewModel>> GetAllÀctiveItemsAsync()
+        public async Task<IEnumerable<ItemInfoViewModel>> GetAllÀctiveItemsAsync()
         {
-            string sql = @"SELECT Id, Name, Description, CurrentQuantity, CurrentUnitPrice, CreatedAt, LastModifiedAt, UserId, IsDeleted, Unit
+            string sql = @"SELECT Id, Name, Description, Price, CreatedAd
                            FROM Items
                            WHERE IsDeleted = 0;";
 
@@ -186,20 +161,17 @@
             {
                 var result = await conection.QueryAsync<Item>(sql);
 
-                return result
-                    .Select(item => new ItemEditViewModel()
+                var r = result
+                    .Select(item => new ItemInfoViewModel()
                     {
                         Id = item.Id,
                         Name = item.Name,
                         Description = item.Description,
-                        CurrentQuantity = item.CurrentQuantity,
-                        CurrentUnitPrice = item.CurrentUnitPrice,
-                        CreatedAt = item.CreatedAt.ToString(DateTimeDefaultFormat),
-                        LastModifiedAt = item.LastModifiedAt.ToString(DateTimeDefaultFormat),
-                        IsDeleted = item.IsDeleted,
-                        UserId = item.UserId,
-                        Unit = item.Unit
+                        Price = item.Price,
+                        CreatedAd = item.CreatedAd
                     });
+
+                return r;
             }
         }
 
@@ -208,15 +180,15 @@
         /// </summary>
         /// <param name="id">Id of the Item</param>
         /// <returns>ItemEditViewModel<returns>
-        public async Task<ItemEditViewModel?> GetItemAsync(int id)
+        public async Task<ItemInfoViewModel?> GetItemAsync(int id)
         {
-            string sql = string.Format(@"SELECT Id, Name, Description, CurrentQuantity, CurrentUnitPrice, CreatedAt, LastModifiedAt, UserId, IsDeleted, Unit
+            string sql = @"SELECT Id, Name, Description, Price, CreatedAd
                            FROM Items
-                           WHERE Id={0};", id);
+                           WHERE Id=@Id;";
 
             using (var conection = this.context.CreateConnection())
             {
-                var result = await conection.QueryFirstOrDefaultAsync<Item>(sql);
+                var result = await conection.QueryFirstOrDefaultAsync<Item>(sql, new { Id = id });
 
                 if (result == null)
                 {
@@ -224,18 +196,13 @@
                 }
                 else
                 {
-                    return new ItemEditViewModel()
+                    return new ItemInfoViewModel()
                     {
                         Id = result.Id,
                         Name = result.Name,
                         Description = result.Description,
-                        CurrentQuantity = result.CurrentQuantity,
-                        CurrentUnitPrice = result.CurrentUnitPrice,
-                        CreatedAt = result.CreatedAt.ToString(DateTimeDefaultFormat),
-                        LastModifiedAt = result.LastModifiedAt.ToString(DateTimeDefaultFormat),
-                        UserId = result.UserId,
-                        IsDeleted = result.IsDeleted,
-                        Unit = result.Unit
+                        Price = result.Price,
+                        CreatedAd = result.CreatedAd
                     };
                 }
             }

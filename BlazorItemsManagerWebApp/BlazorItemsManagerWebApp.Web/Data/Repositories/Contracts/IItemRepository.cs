@@ -8,14 +8,14 @@ namespace BlazorItemsManagerWebApp.Web.Data.Repositories.Contracts
 
         Task<bool> EditItemAsync(ItemEditViewModel itemEditViewModel);
 
-        Task<ItemEditViewModel?> GetItemAsync(int id);
+        Task<ItemInfoViewModel?> GetItemAsync(int id);
 
         Task<bool> DeleteItemAsync(int id);
 
-        Task<IEnumerable<ItemEditViewModel>> GetAllItemsAsync();
+        Task<IEnumerable<ItemInfoViewModel>> GetAllItemsAsync();
 
-        Task<IEnumerable<ItemEditViewModel>> GetAllÀctiveItemsAsync();
+        Task<IEnumerable<ItemInfoViewModel>> GetAllÀctiveItemsAsync();
 
-        Task<IEnumerable<ItemEditViewModel>> GetAllDeletedItemsAsync();
+        Task<IEnumerable<ItemInfoViewModel>> GetAllDeletedItemsAsync();
     }
 }

@@ -19,38 +19,23 @@
     </div>
 
     <div class="form-group">
-        <label for="unit">Unit:</label>
-        <InputSelect id="unit" class="form-control" @bind-Value="itemAddViewModel.Unit">
-            @foreach (var unit in UnitValues)
-            {
-                <option value="@unit">@unit</option>
-            }
-        </InputSelect>
-    </div>
-
-    <div class="form-group">
-        <label for="quantity">Current Quantity:</label>
-        <InputNumber id="quantity" class="form-control" @bind-Value="itemAddViewModel.CurrentQuantity" step="0.001" min="0.00" />
-        <ValidationMessage For="@(() => itemAddViewModel.CurrentQuantity)" />
-    </div>
-
-    <div class="form-group">
-        <label for="price">Current Unit Price:</label>
-        <InputNumber id="price" class="form-control" @bind-Value="itemAddViewModel.CurrentUnitPrice" step="0.001" min="0.00" />
-        <ValidationMessage For="@(() => itemAddViewModel.CurrentUnitPrice)" />
+        <label for="price">Price:</label>
+        <InputNumber id="price" class="form-control" @bind-Value="itemAddViewModel.Price" step="0.01" min="0.00" />
     </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>
 </EditForm>
 
 @code {
-    private ItemAddViewModel itemAddViewModel = new ItemAddViewModel()
-        {
-            UserId = "553CDCB9-5772-468A-92C8-24E9532E85F4"
-        };
+    private ItemAddViewModel itemAddViewModel = new ItemAddViewModel();
 
     private async Task HandleValidSubmit()
     {
+        if (!itemAddViewModel.CheckValues())
+        {
+            NavigationManager.NavigateTo(NavigationManager.Uri, true);
+        }
+
         var result = await itemRepository.CreateItemAsync(itemAddViewModel);
 
         if (result)

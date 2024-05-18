@@ -27,16 +27,10 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Id</th>
                     <th>Name</th>
                     <th>Description</th>
-                    <th>Unit</th>
-                    <th>Current Quantity</th>
-                    <th>Current Unit Price</th>
-                    <th>User Id</th>
+                    <th>Price</th>
                     <th>Created At</th>
-                    <th>Last Modified At</th>
-                    <th>Is Deleted</th>
                     <th>Edit</th>
                     <th>Delete</th>
                 </tr>
@@ -45,30 +39,18 @@
                 @foreach (var item in items)
                 {
                     <tr>
-                        <td>@item.Id</td>
                         <td>@item.Name</td>
                         <td>@item.Description</td>
-                        <td>@item.Unit</td>
-                        <td>@item.CurrentQuantity</td>
-                        <td>@item.CurrentUnitPrice</td>
-                        <td>@item.UserId</td>
-                        <td>@item.CreatedAt</td>
-                        <td>@item.LastModifiedAt</td>
-                        <td>@item.IsDeleted</td>
+                        <td>@item.Price</td>
+                        <td>@item.CreatedAd</td>
                         <td>
                             <NavLink href="@($"item/edit/{item.Id}")">
                                 Edit
                             </NavLink>
                         </td>
                         <td>
-                            @if (item.CurrentQuantity == 0.00M)
-                            {
-                                <button @onclick="@(async () => await DeleteItem(item.Id))" class="btn btn-danger">Delete</button>
-                            }
-                            else
-                            {
-                                <span>Can not be deleted!</span>
-                            }
+                            <button @onclick="@(async () => await DeleteItem(item.Id))" class="btn btn-danger">Delete</button>
+
                         </td>
                     </tr>
                 }
@@ -80,7 +62,7 @@
 
 
 @code {
-    private IEnumerable<ItemEditViewModel> items = new List<ItemEditViewModel>();
+    private IEnumerable<ItemInfoViewModel> items = new List<ItemInfoViewModel>();
     private bool loading = true;
 
     protected override async Task OnInitializedAsync()

@@ -7,25 +7,14 @@
         //Fields
         private int id;
         private string name = string.Empty;
-        private string? description = null;
-        private string unit = string.Empty;
-        private decimal currentQuantity = 0.00M;
-        private decimal currentUnitPrice = 0.00M;
-        private string userId = "";
-        private string createdAt = string.Empty;
-        private string lastModifiedAt = string.Empty;
+        private string description = string.Empty;
+        private decimal price = 0.00M;
 
         //Flags
         private bool isIdValid;
         private bool isNameValid;
         private bool isDescriptionValid;
-        private bool isUnitValid;
-        private bool isCurrentQuantityValid;
-        private bool isCurrentUnitPriceValid;
-        private bool isUserIdValid;
-        private bool isCreatedAtValid;
-        private bool isLastModifiedAtValid;
-
+        private bool isPriceValid;
 
         public ItemEditViewModel()
         {
@@ -37,21 +26,9 @@
 
         public string Name { get => name; set => name = value; }
 
-        public string? Description { get => this.description; set => this.description = value; }
+        public string Description { get => this.description; set => this.description = value; }
 
-        public decimal CurrentQuantity { get => this.currentQuantity; set => this.currentQuantity = value; }
-
-        public decimal CurrentUnitPrice { get => this.currentUnitPrice; set => this.currentUnitPrice = value; }
-
-        public string UserId { get => this.userId; set => this.userId = value; }
-
-        public string CreatedAt { get => this.createdAt; set => this.createdAt = value; }
-
-        public string LastModifiedAt { get => this.lastModifiedAt; set => this.lastModifiedAt = value; }
-
-        public bool IsDeleted { get; set; }
-
-        public string Unit { get => this.unit; set => this.unit = value; }
+        public decimal Price { get => this.price; set => this.price = value; }
 
         //Methods
         public bool CheckValues()
@@ -67,7 +44,7 @@
                 this.isNameValid = true;
             }
 
-            if ((this.description != null) && this.description.Length > DescriptionMaxLength)
+            if (string.IsNullOrWhiteSpace(this.description) && this.description.Length > DescriptionMaxLength)
             {
                 this.isDescriptionValid = false;
             }
@@ -76,19 +53,9 @@
                 this.isDescriptionValid = true;
             }
 
-            this.isCurrentQuantityValid = this.currentQuantity >= 0.00M;
+            this.isPriceValid = this.price >= 0.00M;
 
-            this.isCurrentUnitPriceValid = this.currentUnitPrice >= 0.00M;
-
-            this.isUserIdValid = !string.IsNullOrWhiteSpace(this.userId);
-
-            this.isCreatedAtValid = !string.IsNullOrWhiteSpace(this.createdAt);
-
-            this.isLastModifiedAtValid = !string.IsNullOrWhiteSpace(this.createdAt);
-
-            this.isUnitValid = !string.IsNullOrWhiteSpace(this.unit);
-
-            return this.isIdValid || this.isNameValid || this.isDescriptionValid || this.isCurrentQuantityValid || this.isCurrentUnitPriceValid || this.isUserIdValid || this.isCreatedAtValid || this.isLastModifiedAtValid || this.isUnitValid;
+            return this.isIdValid || this.isNameValid || this.isDescriptionValid || this.isPriceValid;
         }
     }
 }

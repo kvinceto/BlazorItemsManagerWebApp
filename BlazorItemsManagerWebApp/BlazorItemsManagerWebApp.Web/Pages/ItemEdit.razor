@@ -27,25 +27,8 @@ else
         </div>
 
         <div class="form-group">
-            <label for="unit">Unit:</label>
-            <InputSelect id="unit" disabled class="form-control" @bind-Value="item.Unit">
-                @foreach (var unit in UnitValues)
-                {
-                    <option value="@unit">@unit</option>
-                }
-            </InputSelect>
-        </div>
-
-        <div class="form-group">
-            <label for="quantity">Current Quantity:</label>
-            <InputNumber id="quantity" disabled class="form-control" @bind-Value="item.CurrentQuantity" step="0.001" min="0.00" />
-            <ValidationMessage For="@(() => item.CurrentQuantity)" />
-        </div>
-
-        <div class="form-group">
-            <label for="price">Current Unit Price:</label>
-            <InputNumber id="price" disabled class="form-control" @bind-Value="item.CurrentUnitPrice" step="0.001" min="0.00" />
-            <ValidationMessage For="@(() => item.CurrentUnitPrice)" />
+            <label for="price">Price:</label>
+            <InputNumber id="price" class="form-control" @bind-Value="item.Price" step="0.01" min="0.00" />
         </div>
 
         <button type="submit" class="btn btn-primary">Submit</button>
@@ -60,7 +43,16 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        item = await itemRepository.GetItemAsync(int.Parse(Id));
+        var res = await itemRepository.GetItemAsync(int.Parse(Id));
+        if (res != null)
+        {
+            item = new ItemEditViewModel()
+                {
+                    Id = res.Id,
+                    Name = res.Name,
+                    Description = res.Description
+                };
+        }
     }
 
     private async Task HandleSubmit()
