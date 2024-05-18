@@ -9,7 +9,6 @@
 
     using static Common.ApplicationConstants.GlobalContants;
 
-
     public class ItemRepository : IItemRepository
     {
         private readonly IConfiguration configuration;
@@ -101,14 +100,13 @@
         /// <returns>True or False</returns>
         public async Task<bool> DeleteItemAsync(int id)
         {
-            var date = DateTime.UtcNow;
-            string sql = string.Format(@"UPDATE Items
-                           SET IsDeleted = 1, LastModifiedAt = {0}
-                           WHERE Id = {1};", date, id);
+            string sql = @"UPDATE Items
+                   SET IsDeleted = 1, LastModifiedAt = @LastModifiedAt
+                   WHERE Id = @Id AND CurrentQuantity = 0;";
 
             using (var conection = GetConection())
             {
-                var result = await conection.ExecuteAsync(sql);
+                var result = await conection.ExecuteAsync(sql, new { LastModifiedAt = DateTime.UtcNow, Id = id });
 
                 return result > 0 ? true : false;
             }

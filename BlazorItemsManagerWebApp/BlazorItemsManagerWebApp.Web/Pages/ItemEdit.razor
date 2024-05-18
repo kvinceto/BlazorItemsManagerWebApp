@@ -1,15 +1,86 @@
-﻿@page "/item/edit"
+﻿@page "/item/edit/{Id}"
 @using BlazorItemsManagerWebApp.Web.Data.Repositories.Contracts
 @using BlazorItemsManagerWebApp.Web.ViewModels
-@using static BlazorItemsManagerWebApp.Web.Common.ApplicationConstants.GlobalContants;
 @inject IItemRepository itemRepository
 @inject NavigationManager NavigationManager
 
 <h3>Item Edit</h3>
 
+@if (item == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+
+    <EditForm Model="@item" OnValidSubmit="HandleSubmit">
+        <DataAnnotationsValidator />
+
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <InputText id="name" class="form-control" @bind-Value="item.Name" placeholder="Enter name of the item" />
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <InputText id="description" class="form-control" @bind-Value="item.Description" placeholder="Enter some aditional info for the item" />
+        </div>
+
+        <div class="form-group">
+            <label for="unit">Unit:</label>
+            <InputSelect id="unit" disabled class="form-control" @bind-Value="item.Unit">
+                @foreach (var unit in UnitValues)
+                {
+                    <option value="@unit">@unit</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="form-group">
+            <label for="quantity">Current Quantity:</label>
+            <InputNumber id="quantity" disabled class="form-control" @bind-Value="item.CurrentQuantity" step="0.001" min="0.00" />
+            <ValidationMessage For="@(() => item.CurrentQuantity)" />
+        </div>
+
+        <div class="form-group">
+            <label for="price">Current Unit Price:</label>
+            <InputNumber id="price" disabled class="form-control" @bind-Value="item.CurrentUnitPrice" step="0.001" min="0.00" />
+            <ValidationMessage For="@(() => item.CurrentUnitPrice)" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </EditForm>
+}
+
 @code {
-    protected override async void OnInitialized()
+    [Parameter]
+    public string? Id { get; set; }
+
+    private ItemEditViewModel? item;
+
+    protected override async Task OnInitializedAsync()
     {
-        var items = await itemRepository.GetAllÀctiveItemsAsync();
+        item = await itemRepository.GetItemAsync(int.Parse(Id));
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (item.CheckValues())
+        {
+            var result = await itemRepository.EditItemAsync(item);
+            if (result)
+            {
+                // Redirect to the items page after submission
+                NavigationManager.NavigateTo("/items");
+            }
+            else
+            {
+                NavigationManager.NavigateTo(NavigationManager.Uri, true);
+            }
+        }
+        else
+        {
+            NavigationManager.NavigateTo(NavigationManager.Uri, true);
+        }
     }
 }

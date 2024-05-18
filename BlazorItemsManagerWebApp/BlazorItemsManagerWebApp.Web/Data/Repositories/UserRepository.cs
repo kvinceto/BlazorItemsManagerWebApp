@@ -1,12 +1,11 @@
-﻿using Dapper;
-using Microsoft.Data.SqlClient;
-
-using BlazorItemsManagerWebApp.Web.Data.Models;
-using BlazorItemsManagerWebApp.Web.Data.Repositories.Contracts;
-using BlazorItemsManagerWebApp.Web.ViewModels;
-
-namespace BlazorItemsManagerWebApp.Web.Data.Repositories
+﻿namespace BlazorItemsManagerWebApp.Web.Data.Repositories
 {
+    using Dapper;
+    using Microsoft.Data.SqlClient;
+
+    using Data.Models;
+    using Data.Repositories.Contracts;
+    using ViewModels;
 
     public class UserRepository : IUserRepository
     {
@@ -70,7 +69,7 @@ namespace BlazorItemsManagerWebApp.Web.Data.Repositories
 
                 var sql = "INSERT INTO Users (Id, Email, Role, Password) VALUES (@Id, @Email, @Role, @Password)";
 
-               return await conection.ExecuteAsync(sql, dbUser);
+                return await conection.ExecuteAsync(sql, dbUser);
             }
         }
 
