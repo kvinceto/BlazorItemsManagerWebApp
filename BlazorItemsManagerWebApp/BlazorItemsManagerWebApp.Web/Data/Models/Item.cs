@@ -12,6 +12,8 @@
 
         public decimal CurrentUnitPrice { get; set; } = 0.00M;
 
+        public string Unit { get; set; } = null!;
+
         public DateTime CreatedAt { get; set; }
 
         public DateTime LastModifiedAt { get; set; }

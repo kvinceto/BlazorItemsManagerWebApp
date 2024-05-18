@@ -1,6 +1,5 @@
 ﻿@page "/item/add"
-@using BlazorItemsManagerWebApp.Web.Data.Repositories.Contracts
-@using BlazorItemsManagerWebApp.Web.ViewModels
+
 @inject IItemRepository itemRepository
 @inject NavigationManager NavigationManager
 
@@ -11,23 +10,33 @@
 
     <div class="form-group">
         <label for="name">Name:</label>
-        <InputText id="name" class="form-control" @bind-Value="itemAddViewModel.Name" />
+        <InputText id="name" class="form-control" @bind-Value="itemAddViewModel.Name" placeholder="Enter name of the item" />
     </div>
 
     <div class="form-group">
         <label for="description">Description:</label>
-        <InputText id="description" class="form-control" @bind-Value="itemAddViewModel.Description" />
+        <InputText id="description" class="form-control" @bind-Value="itemAddViewModel.Description" placeholder="Enter some aditional info for the item" />
+    </div>
+
+    <div class="form-group">
+        <label for="unit">Unit:</label>
+        <InputSelect id="unit" class="form-control" @bind-Value="itemAddViewModel.Unit">
+            @foreach (var unit in UnitValues)
+            {
+                <option value="@unit">@unit</option>
+            }
+        </InputSelect>
     </div>
 
     <div class="form-group">
         <label for="quantity">Current Quantity:</label>
-        <InputNumber id="quantity" class="form-control" @bind-Value="itemAddViewModel.CurrentQuantity" />
+        <InputNumber id="quantity" class="form-control" @bind-Value="itemAddViewModel.CurrentQuantity" step="0.001" min="0.00" />
         <ValidationMessage For="@(() => itemAddViewModel.CurrentQuantity)" />
     </div>
 
     <div class="form-group">
         <label for="price">Current Unit Price:</label>
-        <InputNumber id="price" class="form-control" @bind-Value="itemAddViewModel.CurrentUnitPrice" />
+        <InputNumber id="price" class="form-control" @bind-Value="itemAddViewModel.CurrentUnitPrice" step="0.001" min="0.00" />
         <ValidationMessage For="@(() => itemAddViewModel.CurrentUnitPrice)" />
     </div>
 
@@ -35,13 +44,16 @@
 </EditForm>
 
 @code {
-    private ItemAddViewModel itemAddViewModel = new ItemAddViewModel();
+    private ItemAddViewModel itemAddViewModel = new ItemAddViewModel()
+        {
+            UserId = "553CDCB9-5772-468A-92C8-24E9532E85F4"
+        };
 
     private async Task HandleValidSubmit()
     {
         var result = await itemRepository.CreateItemAsync(itemAddViewModel);
 
-        if(result)
+        if (result)
         {
             NavigationManager.NavigateTo("/");
         }

@@ -1,0 +1,84 @@
+﻿@page "/items"
+@inject IItemRepository itemRepository
+@inject NavigationManager NavigationManager
+<h3>Item</h3>
+
+<div class="container">
+    <div class="row">
+        <div class="col-4">
+            <NavLink href="/item/add" Match="NavLinkMatch.All">
+                Create Item
+            </NavLink>
+        </div>
+        <div class="col-4">
+            <NavLink href="/item/edit" Match="NavLinkMatch.All">
+                Edit Item
+            </NavLink>
+        </div>
+        <div class="col-4">
+            <NavLink href="/item/delete" Match="NavLinkMatch.All">
+                Delete
+            </NavLink>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    @if (loading)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else if (!items.Any())
+    {
+        <p>No items found.</p>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Unit</th>
+                    <th>Current Quantity</th>
+                    <th>Current Unit Price</th>
+                    <th>User Id</th>
+                    <th>Created At</th>
+                    <th>Last Modified At</th>
+                    <th>Is Deleted</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in items)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Name</td>
+                        <td>@item.Description</td>
+                        <td>@item.Unit</td>
+                        <td>@item.CurrentQuantity</td>
+                        <td>@item.CurrentUnitPrice</td>
+                        <td>@item.UserId</td>
+                        <td>@item.CreatedAt</td>
+                        <td>@item.LastModifiedAt</td>
+                        <td>@item.IsDeleted</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+
+
+@code {
+    private IEnumerable<ItemEditViewModel> items = new List<ItemEditViewModel>();
+    private bool loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        items = await itemRepository.GetAllÀctiveItemsAsync();
+        loading = false;
+    }
+}

@@ -1,6 +1,15 @@
 ﻿@page "/item/edit"
+@using BlazorItemsManagerWebApp.Web.Data.Repositories.Contracts
+@using BlazorItemsManagerWebApp.Web.ViewModels
+@using static BlazorItemsManagerWebApp.Web.Common.ApplicationConstants.GlobalContants;
+@inject IItemRepository itemRepository
+@inject NavigationManager NavigationManager
+
 <h3>Item Edit</h3>
 
 @code {
-
+    protected override async void OnInitialized()
+    {
+        var items = await itemRepository.GetAllÀctiveItemsAsync();
+    }
 }
