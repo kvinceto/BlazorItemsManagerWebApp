@@ -1,0 +1,61 @@
+﻿@page "/items"
+@inject IItemRepository itemRepository
+@inject NavigationManager NavigationManager
+
+<div class="container align-content-center">
+    <h3>Items</h3>
+
+    <div class="row">
+        <div class="col-4">
+            <NavLink href="/item/add" Match="NavLinkMatch.All">
+                Create Item
+            </NavLink>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    @if (loading)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else if (!items.Any())
+    {
+        <p>No items found.</p>
+    }
+    else
+    {
+        <DxGrid Data="items" ShowGroupPanel="true" ShowFilterRow="true">
+            <Columns>
+                <DxGridDataColumn FieldName="Name" Caption="Item name" />
+                <DxGridDataColumn FieldName="Description" Caption="Item description" />
+                <DxGridDataColumn FieldName="Price" DisplayFormat="0.00" Caption="Item price" />
+                <DxGridDataColumn FieldName="CreatedAd" Caption="Item created at"
+                                  SortIndex="0" SortOrder="GridColumnSortOrder.Descending" />
+            </Columns>
+            <TotalSummary>
+                <DxGridSummaryItem FooterColumnName="CreatedAd" SummaryType="GridSummaryItemType.Count" />
+            </TotalSummary>
+        </DxGrid>
+    }
+</div>
+
+
+
+@code {
+    private IEnumerable<ItemInfoViewModel> items = new List<ItemInfoViewModel>();
+    private bool loading = true;
+    protected override async Task OnInitializedAsync()
+    {
+        items = await itemRepository.GetAllActiveItemsAsync();
+        loading = false;
+    }
+
+    private async Task DeleteItem(int id)
+    {
+        var result = await itemRepository.DeleteItemAsync(id);
+
+        NavigationManager.NavigateTo(NavigationManager.Uri, true);
+
+    }
+}
