@@ -2,16 +2,29 @@
 @inject IItemRepository itemRepository
 @inject NavigationManager NavigationManager
 
-<div class="container align-content-center">
-    <h3>Items</h3>
-
-    <div class="row">
-        <div class="col-4">
-            <NavLink href="/item/add" Match="NavLinkMatch.All">
-                Create Item
-            </NavLink>
-        </div>
-    </div>
+<div class="table-responsive">
+    <table class="table table-bordered text-center">
+        <thead class="table-dark">
+            <tr>
+                <th>Create</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <button class="btn btn-primary" @onclick="CreateItem">Create</button>
+                </td>
+                <td>
+                    <button class="btn btn-warning" @onclick="() => EditItem(1)">Edit</button>
+                </td>
+                <td>
+                    <button class="btn btn-danger" @onclick="async () => await DeleteItem(1)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 
 <div class="container">
@@ -27,10 +40,11 @@
     {
         <DxGrid Data="items" ShowGroupPanel="true" ShowFilterRow="true">
             <Columns>
+                <DxGridDataColumn FieldName="Id" Caption="Item id" Width="100px" />
                 <DxGridDataColumn FieldName="Name" Caption="Item name" />
                 <DxGridDataColumn FieldName="Description" Caption="Item description" />
-                <DxGridDataColumn FieldName="Price" DisplayFormat="0.00" Caption="Item price" />
-                <DxGridDataColumn FieldName="CreatedAd" Caption="Item created at"
+                <DxGridDataColumn FieldName="Price" DisplayFormat="0.00" Caption="Item price" Width="100px" />
+                <DxGridDataColumn FieldName="CreatedAd" Caption="Item created at" Width="200px"
                                   SortIndex="0" SortOrder="GridColumnSortOrder.Descending" />
             </Columns>
             <TotalSummary>
@@ -49,6 +63,16 @@
     {
         items = await itemRepository.GetAllActiveItemsAsync();
         loading = false;
+    }
+
+    private void CreateItem()
+    {
+        NavigationManager.NavigateTo($"/item/add");
+    }
+
+    private void EditItem(int id)
+    {
+        NavigationManager.NavigateTo($"/item/edit/{id}");
     }
 
     private async Task DeleteItem(int id)
