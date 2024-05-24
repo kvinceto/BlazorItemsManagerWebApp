@@ -5,6 +5,7 @@
     using Data;
     using Data.Models;
     using Data.Repositories.Contracts;
+
     using ViewModels;
 
     using static Common.ApplicationConstants.ItemConstants;
@@ -80,7 +81,7 @@
         /// <summary>
         /// The method marks an Item in the databasa as deleted
         /// </summary>
-        /// <param name="id">It of the Item</param>
+        /// <param name="id">Id of the Item</param>
         /// <returns>True or False</returns>
         public async Task<bool> DeleteItemAsync(int id)
         {
@@ -90,16 +91,16 @@
 
             using (var conection = context.CreateConnection())
             {
-                var result = await conection.ExecuteAsync(sql, new { LastModifiedAt = DateTime.UtcNow, Id = id });
+                var result = await conection.ExecuteAsync(sql, new { Id = id });
 
                 return result > 0 ? true : false;
             }
         }
 
         /// <summary>
-        /// This method find all Dealeted Items in the database
+        /// This method find all Deleated Items in the database
         /// </summary>
-        /// <returns>Collection of ItemEditViewModel</returns>
+        /// <returns>Collection of ItemInfoViewModel</returns>
         public async Task<IEnumerable<ItemInfoViewModel>> GetAllDeletedItemsAsync()
         {
             string sql = @"SELECT Id, Name, Description, Price, CreatedAd
@@ -125,7 +126,7 @@
         /// <summary>
         /// This method find all Items in the database
         /// </summary>
-        /// <returns>Collection of ItemEditViewModel</returns>
+        /// <returns>Collection of ItemInfoViewModel</returns>
         public async Task<IEnumerable<ItemInfoViewModel>> GetAllItemsAsync()
         {
             string sql = @"SELECT Id, Name, Description, Price, CreatedAd
@@ -150,7 +151,7 @@
         /// <summary>
         /// This method find all Active Items in the database
         /// </summary>
-        /// <returns>Collection of ItemEditViewModel</returns>
+        /// <returns>Collection of ItemInfoViewModel</returns>
         public async Task<IEnumerable<ItemInfoViewModel>> GetAllActiveItemsAsync()
         {
             string sql = @"SELECT Id, Name, Description, Price, CreatedAd
@@ -179,7 +180,7 @@
         /// This method find an Item in the database
         /// </summary>
         /// <param name="id">Id of the Item</param>
-        /// <returns>ItemEditViewModel<returns>
+        /// <returns>ItemInfoViewModel or Null<returns>
         public async Task<ItemInfoViewModel?> GetItemAsync(int id)
         {
             string sql = @"SELECT Id, Name, Description, Price, CreatedAd
