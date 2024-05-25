@@ -47,7 +47,7 @@ Before you begin, ensure you have met the following requirements:
 3. **Create the database**
 
     Go to SQL Server Management Studio and create the database
-    Use this Query: <a href="/SQLQuery.sql"></a>
+    Use this Query: [.SQL Query](/SQLQuery.sql)
 
 4. **Run the Application**
 
