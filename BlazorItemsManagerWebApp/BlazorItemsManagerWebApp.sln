@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorItemsManegerWebAppDevExpress.Web", "BlazorItemsManegerWebAppDevExpress.Web\BlazorItemsManegerWebAppDevExpress.Web.csproj", "{52D8A401-42FF-4CBD-8BA5-8A9D96B7569B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorItemsManegerWebAppDevExpress.Web", "BlazorItemsManegerWebAppDevExpress.Web\BlazorItemsManegerWebAppDevExpress.Web.csproj", "{52D8A401-42FF-4CBD-8BA5-8A9D96B7569B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorItemsManegerWebAppDevExpress.Tests", "BlazorItemsManegerWebAppDevExpress.Tests\BlazorItemsManegerWebAppDevExpress.Tests.csproj", "{6024B363-D0B2-4C86-93C7-4E2DE522176C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{52D8A401-42FF-4CBD-8BA5-8A9D96B7569B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52D8A401-42FF-4CBD-8BA5-8A9D96B7569B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52D8A401-42FF-4CBD-8BA5-8A9D96B7569B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6024B363-D0B2-4C86-93C7-4E2DE522176C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6024B363-D0B2-4C86-93C7-4E2DE522176C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6024B363-D0B2-4C86-93C7-4E2DE522176C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6024B363-D0B2-4C86-93C7-4E2DE522176C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

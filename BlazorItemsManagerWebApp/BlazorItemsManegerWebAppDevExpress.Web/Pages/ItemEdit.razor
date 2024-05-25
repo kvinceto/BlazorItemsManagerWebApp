@@ -63,7 +63,7 @@ else
             var result = await itemRepository.EditItemAsync(item);
             if (result)
             {
-                NavigationManager.NavigateTo("/items");
+                NavigationManager.NavigateTo("/items", true);
             }
             else
             {

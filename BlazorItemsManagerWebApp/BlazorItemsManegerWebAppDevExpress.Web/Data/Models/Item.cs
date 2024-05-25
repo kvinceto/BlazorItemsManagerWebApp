@@ -10,7 +10,7 @@
 
         public decimal Price { get; set; } = 0.00M;
 
-        public string CreatedAd { get; set; } = null!;
+        public DateTime CreatedAt { get; set; }
 
         public bool IsDeleted { get; set; }
     }

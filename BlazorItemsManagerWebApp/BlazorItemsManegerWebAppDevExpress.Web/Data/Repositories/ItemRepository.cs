@@ -26,18 +26,18 @@
         /// <returns>True or False</returns>
         public async Task<bool> CreateItemAsync(ItemAddViewModel itemAddViewModel)
         {
-            var date = DateTime.UtcNow.ToString(DateTimeDefaultFormat);
+            var formatedDate = DateTime.UtcNow.ToString(DateTimeDefaultFormat);
             Item item = new Item()
             {
                 Name = itemAddViewModel.Name,
                 Description = itemAddViewModel.Description,
                 Price = itemAddViewModel.Price,
-                CreatedAd = date,
+                CreatedAt = DateTime.Parse(formatedDate),
                 IsDeleted = false
             };
 
-            string sql = @"INSERT INTO Items (Name, Description, Price, CreatedAd, IsDeleted)
-              VALUES (@Name, @Description, @Price, @CreatedAd, @IsDeleted);";
+            string sql = @"INSERT INTO Items (Name, Description, Price, CreatedAt, IsDeleted)
+              VALUES (@Name, @Description, @Price, @CreatedAt, @IsDeleted);";
 
             using (var conection = context.CreateConnection())
             {
@@ -79,7 +79,7 @@
         }
 
         /// <summary>
-        /// The method marks an Item in the databasa as deleted
+        /// The method marks an Item in the database as deleted
         /// </summary>
         /// <param name="id">Id of the Item</param>
         /// <returns>True or False</returns>
@@ -96,6 +96,24 @@
                 return result > 0 ? true : false;
             }
         }
+        /// <summary>
+        /// The method marks an Item in the databasa as not deleted
+        /// </summary>
+        /// <param name="id">Id of the Item</param>
+        /// <returns>True or False</returns>
+        public async Task<bool> RestoreItemAsync(int id)
+        {
+            string sql = @"UPDATE Items
+                   SET IsDeleted = 0
+                   WHERE Id = @Id;";
+
+            using (var conection = context.CreateConnection())
+            {
+                var result = await conection.ExecuteAsync(sql, new { Id = id });
+
+                return result > 0 ? true : false;
+            }
+        }
 
         /// <summary>
         /// This method find all Deleated Items in the database
@@ -103,7 +121,7 @@
         /// <returns>Collection of ItemInfoViewModel</returns>
         public async Task<IEnumerable<ItemInfoViewModel>> GetAllDeletedItemsAsync()
         {
-            string sql = @"SELECT Id, Name, Description, Price, CreatedAd
+            string sql = @"SELECT Id, Name, Description, Price, CreatedAt
                            FROM Items
                            WHERE IsDeleted = 1;";
 
@@ -118,32 +136,7 @@
                         Name = item.Name,
                         Description = item.Description,
                         Price = item.Price,
-                        CreatedAd = item.CreatedAd
-                    });
-            }
-        }
-
-        /// <summary>
-        /// This method find all Items in the database
-        /// </summary>
-        /// <returns>Collection of ItemInfoViewModel</returns>
-        public async Task<IEnumerable<ItemInfoViewModel>> GetAllItemsAsync()
-        {
-            string sql = @"SELECT Id, Name, Description, Price, CreatedAd
-                           FROM Items";
-
-            using (var conection = context.CreateConnection())
-            {
-                var result = await conection.QueryAsync<Item>(sql);
-
-                return result
-                    .Select(item => new ItemInfoViewModel()
-                    {
-                        Id = item.Id,
-                        Name = item.Name,
-                        Description = item.Description,
-                        Price = item.Price,
-                        CreatedAd = item.CreatedAd
+                        CreatedAt = item.CreatedAt.ToString(DateTimeDefaultFormat)
                     });
             }
         }
@@ -154,25 +147,25 @@
         /// <returns>Collection of ItemInfoViewModel</returns>
         public async Task<IEnumerable<ItemInfoViewModel>> GetAllActiveItemsAsync()
         {
-            string sql = @"SELECT Id, Name, Description, Price, CreatedAd
+            string sql = @"SELECT Id, Name, Description, Price, CreatedAt
                            FROM Items
                            WHERE IsDeleted = 0;";
 
             using (var conection = context.CreateConnection())
             {
-                var result = await conection.QueryAsync<Item>(sql);
+                var items = await conection.QueryAsync<Item>(sql);
 
-                var r = result
+                var result = items
                     .Select(item => new ItemInfoViewModel()
                     {
                         Id = item.Id,
                         Name = item.Name,
                         Description = item.Description,
                         Price = item.Price,
-                        CreatedAd = item.CreatedAd
+                        CreatedAt = item.CreatedAt.ToString(DateTimeDefaultFormat)
                     });
 
-                return r;
+                return result;
             }
         }
 
@@ -183,7 +176,7 @@
         /// <returns>ItemInfoViewModel or Null<returns>
         public async Task<ItemInfoViewModel?> GetItemAsync(int id)
         {
-            string sql = @"SELECT Id, Name, Description, Price, CreatedAd
+            string sql = @"SELECT Id, Name, Description, Price, CreatedAt
                            FROM Items
                            WHERE Id=@Id;";
 
@@ -203,7 +196,7 @@
                         Name = result.Name,
                         Description = result.Description,
                         Price = result.Price,
-                        CreatedAd = result.CreatedAd
+                        CreatedAt = result.CreatedAt.ToString(DateTimeDefaultFormat)
                     };
                 }
             }

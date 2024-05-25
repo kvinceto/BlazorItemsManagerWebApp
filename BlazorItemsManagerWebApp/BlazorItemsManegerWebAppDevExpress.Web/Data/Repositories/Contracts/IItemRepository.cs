@@ -10,8 +10,7 @@
         Task<ItemInfoViewModel?> GetItemAsync(int id);
 
         Task<bool> DeleteItemAsync(int id);
-
-        Task<IEnumerable<ItemInfoViewModel>> GetAllItemsAsync();
+        Task<bool> RestoreItemAsync(int id);
 
         Task<IEnumerable<ItemInfoViewModel>> GetAllActiveItemsAsync();
 

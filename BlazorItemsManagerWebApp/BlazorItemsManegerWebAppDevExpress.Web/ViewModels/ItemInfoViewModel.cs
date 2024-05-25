@@ -9,7 +9,7 @@
         private string name = string.Empty;
         private string description = string.Empty;
         private decimal price = 0.00M;
-        private string createdAd = string.Empty;
+        private string createdAt = string.Empty;
 
         //Flags
         private bool isIdValid;
@@ -31,7 +31,7 @@
 
         public decimal Price { get => price; set => price = value; }
 
-        public string CreatedAd { get => createdAd; set => createdAd = value; }
+        public string CreatedAt { get => createdAt; set => createdAt = value; }
 
         //Methods
         public bool CheckValues()

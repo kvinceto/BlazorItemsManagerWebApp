@@ -1,0 +1,136 @@
+﻿@page "/items"
+@inject IItemRepository itemRepository
+@inject NavigationManager NavigationManager
+
+<div class="container">
+    <h3 class="">All items in use in the database</h3>
+    @if (loading)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else if (!items.Any())
+    {
+        <p><em>No items found.</em></p>
+    }
+    else
+    {
+        //Dev Express Grid
+        <DxGrid Data="items" ShowGroupPanel="true" ShowFilterRow="true">
+            <Columns>
+                <DxGridDataColumn FieldName="Id" Caption="Item id" Width="100px" />
+                <DxGridDataColumn FieldName="Name" Caption="Item name" />
+                <DxGridDataColumn FieldName="Description" Caption="Item description" />
+                <DxGridDataColumn FieldName="Price" DisplayFormat="0.00" Caption="Item price" Width="100px" />
+                <DxGridDataColumn FieldName="CreatedAt" Caption="Item created at" Width="200px" />
+            </Columns>
+            <TotalSummary>
+                <DxGridSummaryItem FooterColumnName="CreatedAt" SummaryType="GridSummaryItemType.Count" />
+            </TotalSummary>
+        </DxGrid>
+
+        //Custom container
+        <div class="container mt-3 custom-container">
+            <ul class="list-unstyled">
+                <li>
+                    <a class="btn btn-success custom-btn" href="#" @onclick="CreateItem">
+                        <i class="fas fa-plus"></i> Create new item
+                    </a>
+                </li>
+                <li>
+                    <hr class="solid">
+                </li>
+                <li>
+                    <div class="dropdown-item custom-dropdown-item">
+                        <select class="form-select" id="itemsToEdit" @onchange="OnSelectedItemChange">
+                            <option value="0" disabled selected>Select an item</option>
+                            @foreach (var item in items)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        </select>
+                        <button class="btn btn-warning mt-2 custom-btn" @onclick="() => EditItem()">Edit item</button>
+                    </div>
+                </li>
+                <li>
+                    <hr class="solid">
+                </li>
+                <li>
+                    <div class="dropdown-item custom-dropdown-item">
+                        <select class="form-select" id="itemsToDelete" @onchange="OnSelectedItemChange">
+                            <option value="0" disabled selected>Select an item</option>
+                            @foreach (var item in items)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        </select>
+                        <button class="btn btn-danger mt-2 custom-btn" @onclick="() => DeleteItem()">Delete item</button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    }
+</div>
+
+<style>
+    .custom-container {
+        width: 300px;
+        margin-left: 10px;
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        background-color: #f9f9f9;
+    }
+
+    .custom-dropdown-item {
+        margin-bottom: 15px;
+    }
+
+    .custom-btn {
+        width: 100%;
+    }
+
+    .form-label {
+        margin-bottom: 5px;
+    }
+
+    .form-select {
+        margin-bottom: 10px;
+    }
+
+</style>
+
+@code {
+    private IEnumerable<ItemInfoViewModel> items = new List<ItemInfoViewModel>();
+    private bool loading = true;
+    private int selectedItemId = 0;
+
+    private void OnSelectedItemChange(ChangeEventArgs e)
+    {
+        selectedItemId = Convert.ToInt32(e.Value);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        items = await itemRepository.GetAllActiveItemsAsync();
+        loading = false;
+    }
+
+    private void CreateItem()
+    {
+        NavigationManager.NavigateTo($"/item/add");
+    }
+
+    private void EditItem()
+    {
+        NavigationManager.NavigateTo($"/item/edit/{selectedItemId}");
+    }
+
+    private async Task DeleteItem()
+    {
+        var result = await itemRepository.DeleteItemAsync(selectedItemId);
+
+        NavigationManager.NavigateTo(NavigationManager.Uri, true);
+
+    }
+}
