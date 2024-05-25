@@ -40,14 +40,15 @@ Before you begin, ensure you have met the following requirements:
     Clone this repository
     https://github.com/kvinceto/BlazorItemsManagerWebApp.git
 
-2. **Update Database Connection String**
-
-    Update the connection string in `appsettings.json` to point to your database.
-
-3. **Create the database**
+2. **Create the database**
 
     Go to SQL Server Management Studio and create the database
-    Use this Query: [.SQL Query](/SQLQuery.sql)
+    Use this Query: [SQL Query](/SQLQuery.sql)
+    
+3. **Update Database Connection String**
+
+    Update the connection string in `appsettings.json` to point to your database.
+    Make sure that the name of the database in the connection string is **BlazorAppDb**
 
 4. **Run the Application**
 
