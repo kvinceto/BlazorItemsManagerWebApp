@@ -28,8 +28,8 @@ The application serves as a template for building scalable and maintainable web 
 
 Before you begin, ensure you have met the following requirements:
 
-- [.NET 7 SDK](https://dotnet.microsoft.com/download/dotnet/7.0)
-- [Visual Studio 2022](https://visualstudio.microsoft.com/vs/) or any other compatible IDE
+- [DevExpress Unified Component Installer](https://docs.devexpress.com/GeneralInformation/15614/installation/download-the-trial-version)
+- [Visual Studio 2022 with .NET 7 Framework](https://visualstudio.microsoft.com/vs/) or any other compatible IDE
 - SQL Server
 - SQL Server Management Studio
 
